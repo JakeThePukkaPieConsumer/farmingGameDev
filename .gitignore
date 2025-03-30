@@ -1,0 +1,50 @@
+# Ignore CMake build files
+/build/
+CMakeCache.txt
+CMakeFiles/
+raylib_build/
+cmake_install.cmake
+Makefile
+
+Ninja*
+.ninja_deps
+.ninja_log
+build.ninja
+
+# Ignore compiled object files and executables
+*.o
+*.obj
+*.so
+*.exe
+*.out
+*.dll
+*.a
+*.lib
+*.dylib
+*.cmake
+
+# Ignore IDE or editor files
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln
+*.sdf
+*.opensdf
+*.db
+*.vcxproj
+*.vcxproj.user
+
+# Ignore Python virtualenvs (if you're using one)
+venv/
+env/
+
+# Ignore backup files (e.g., from vim, emacs, etc.)
+*~
+*.bak
+*.swp
+
+# Ignore test directories if not needed
+Testing/
+*.log
