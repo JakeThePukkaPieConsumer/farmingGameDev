@@ -77,23 +77,25 @@ void TextManager::unloadAllFonts()
 
 Font& TextManager::getFont(const std::string& fontName) 
 {
-    std::cout << "Requested font: " << fontName 
-    << ", Using font: " 
-    << (fontName == "default" ? "Default" : fontName) 
-    << std::endl;
-
-    if (fontName == "default" || m_loadedFonts.find(fontName) == m_loadedFonts.end()) 
-    {
-        if (m_loadedFonts.empty()) 
-        {
-            static Font defaultFont = GetFontDefault();
-            return defaultFont;
-        }
-        
-        return m_loadedFonts[m_defaultFontName];
+    if (fontName != "default" && m_loadedFonts.find(fontName) != m_loadedFonts.end()) {
+        std::cout << "Requested font: " << fontName << ", Found and using font: " << fontName << "\n";
+        return m_loadedFonts[fontName];
     }
     
-    return m_loadedFonts[fontName];
+    // If we're here, either:
+    // 1. "default" was explicitly requested, or
+    // 2. The requested font doesn't exist in our map
+    
+    // Check if we have any fonts loaded at all
+    if (m_loadedFonts.empty()) {
+        std::cout << "No custom fonts available, using raylib default font" << "\n";
+        static Font defaultFont = GetFontDefault();
+        return defaultFont;
+    }
+    
+    std::cout << "Requested font: " << fontName 
+              << ", Using default font: " << m_defaultFontName << "\n";
+    return m_loadedFonts[m_defaultFontName];
 }
 
 void TextManager::drawCenterText(

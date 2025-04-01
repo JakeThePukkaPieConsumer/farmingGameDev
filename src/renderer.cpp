@@ -36,9 +36,7 @@ void Renderer::drawUI()
 
 void Renderer::drawMainMenu()
 {
-    
-    TextManager::drawCenterText("YayFont", 50, BLUE, 0, 100, "test");
-    TextManager::drawCenterText("NoFont", 50, RED, 0, 0, "default");
+    TextManager::drawCenterText("YayFont", 50, BLUE, 0, 100, "aqdf");
 }
 
 void Renderer::drawGameScreen()
