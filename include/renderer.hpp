@@ -3,16 +3,24 @@
 
 #include <raylib.h>
 #include "textManager.hpp"
-#include "game.hpp"
+
+// Forward declaration to resolve circular dependency
+enum class GameState;
 
 class Renderer
 {
 public:
-    static void draw();
+    Renderer() = default;
+    ~Renderer() = default;
+
+    void draw();
 
 private:
     void drawUI();
     void drawMainMenu();
+    void drawGameScreen();
+    void drawPauseMenu();
+    void drawGameOver();
 };
 
-#endif // RENDERER_HPP  
+#endif // RENDERER_HPP

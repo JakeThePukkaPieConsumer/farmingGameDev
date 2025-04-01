@@ -8,13 +8,13 @@
 class TextManager
 {
 public:
-    static void Update();
+    static void update();
 
-    static void LoadTextManagerFont(const std::string& fontName, const char* fontPath);
-    static void SetDefaultFont(const std::string& fontName);
-    static void UnloadAllFonts();
+    static void loadFont(const std::string& fontName, const char* fontPath);
+    static void setDefaultFont(const std::string& fontName);
+    static void unloadAllFonts();
  
-    static void DrawCenterText(
+    static void drawCenterText(
         const char* text, 
         int fontSize, 
         Color color, 
@@ -23,7 +23,7 @@ public:
         const std::string& fontName = "default"
     );
 
-    static void DrawLeftText(
+    static void drawLeftText(
         const char* text, 
         int fontSize, 
         Color color, 
@@ -32,7 +32,7 @@ public:
         const std::string& fontName = "default"
     );
 
-    static void DrawRightText(
+    static void drawRightText(
         const char* text, 
         int fontSize, 
         Color color, 
@@ -42,17 +42,17 @@ public:
     );
 
 private:
-    static int screenWidth;
-    static int screenHeight;
+    static int m_screenWidth;
+    static int m_screenHeight;
 
     static std::unordered_map<std::string, Font> m_loadedFonts;
     static std::string m_defaultFontName;
 
-    static int GetCenteredY(int fontSize, int paddingY);
-    static int GetTextWidth(const char* text, int fontSize);
-    static int GetRightAlignedX(const char* text, int fontSize, int paddingX);
+    static int getCenteredY(int fontSize, int paddingY);
+    static int getTextWidth(const char* text, int fontSize, const Font& font);
+    static int getRightAlignedX(const char* text, int fontSize, int paddingX, const Font& font);
 
-    static Font& GetFont(const std::string& fontName);
+    static Font& getFont(const std::string& fontName);
 };
 
 #endif // TEXTMANAGER_HPP

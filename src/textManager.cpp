@@ -1,27 +1,29 @@
-#include "../include/textManager.hpp"
-#include "../include/errorHandling.hpp"
+#include "textManager.hpp"
+#include "errorHandling.hpp"
+#include "config.hpp"
+#include "iostream"
 
-int TextManager::screenWidth = 0;
-int TextManager::screenHeight = 0;
+int TextManager::m_screenWidth = windowWidth;
+int TextManager::m_screenHeight = windowHeight;
 std::unordered_map<std::string, Font> TextManager::m_loadedFonts;
 std::string TextManager::m_defaultFontName = "default";
 
-int TextManager::GetCenteredY(int fontSize, int paddingY) 
+int TextManager::getCenteredY(int fontSize, int paddingY) 
 {
-    return (screenHeight / 2) - (fontSize / 2) + paddingY;
+    return (m_screenHeight / 2) - (fontSize / 2) + paddingY;
 }
 
-int TextManager::GetTextWidth(const char* text, int fontSize) 
+int TextManager::getTextWidth(const char* text, int fontSize, const Font& font) 
 {
-    return MeasureText(text, fontSize);
+    return MeasureTextEx(font, text, fontSize, 1).x;
 }
 
-int TextManager::GetRightAlignedX(const char* text, int fontSize, int paddingX)
+int TextManager::getRightAlignedX(const char* text, int fontSize, int paddingX, const Font& font)
 {
-    return (screenWidth - GetTextWidth(text, fontSize)) - paddingX;
+    return (m_screenWidth - getTextWidth(text, fontSize, font)) - paddingX;
 }
 
-void TextManager::LoadTextManagerFont(const std::string& fontName, const char* fontPath) 
+void TextManager::loadFont(const std::string& fontName, const char* fontPath) 
 {
     if (m_loadedFonts.find(fontName) != m_loadedFonts.end())
     {
@@ -29,6 +31,7 @@ void TextManager::LoadTextManagerFont(const std::string& fontName, const char* f
             ErrorCategory::ResourceLoading, 
             "Font already loaded: " + fontName
         );
+        return;
     }
 
     Font newFont = LoadFont(fontPath);
@@ -49,7 +52,7 @@ void TextManager::LoadTextManagerFont(const std::string& fontName, const char* f
     }
 }
 
-void TextManager::SetDefaultFont(const std::string& fontName) 
+void TextManager::setDefaultFont(const std::string& fontName) 
 {
     if (m_loadedFonts.find(fontName) == m_loadedFonts.end()) 
     {
@@ -62,7 +65,7 @@ void TextManager::SetDefaultFont(const std::string& fontName)
     m_defaultFontName = fontName;
 }
 
-void TextManager::UnloadAllFonts() 
+void TextManager::unloadAllFonts() 
 {
     for (auto& fontPair : m_loadedFonts) 
     {
@@ -72,8 +75,13 @@ void TextManager::UnloadAllFonts()
     m_defaultFontName = "default";
 }
 
-Font& TextManager::GetFont(const std::string& fontName) 
+Font& TextManager::getFont(const std::string& fontName) 
 {
+    std::cout << "Requested font: " << fontName 
+    << ", Using font: " 
+    << (fontName == "default" ? "Default" : fontName) 
+    << std::endl;
+
     if (fontName == "default" || m_loadedFonts.find(fontName) == m_loadedFonts.end()) 
     {
         if (m_loadedFonts.empty()) 
@@ -87,7 +95,8 @@ Font& TextManager::GetFont(const std::string& fontName)
     
     return m_loadedFonts[fontName];
 }
-void TextManager::DrawCenterText(
+
+void TextManager::drawCenterText(
     const char* text, 
     int fontSize, 
     Color color, 
@@ -112,16 +121,16 @@ void TextManager::DrawCenterText(
         );
     }
 
-    Font& font = GetFont(fontName);
+    Font& font = getFont(fontName);
 
-    int textWidth = MeasureTextEx(font, text, fontSize, 1).x;
-    int centerX = (screenWidth / 2) - (textWidth / 2) + paddingX;
-    int centerY = GetCenteredY(fontSize, paddingY);
+    int textWidth = getTextWidth(text, fontSize, font);
+    int centerX = (m_screenWidth / 2) - (textWidth / 2) + paddingX;
+    int centerY = getCenteredY(fontSize, paddingY);
 
     DrawTextEx(font, text, Vector2{(float)centerX, (float)centerY}, fontSize, 1, color);
 }
 
-void TextManager::DrawLeftText(
+void TextManager::drawLeftText(
     const char* text, 
     int fontSize, 
     Color color, 
@@ -146,13 +155,13 @@ void TextManager::DrawLeftText(
         );
     }
 
-    Font& font = GetFont(fontName);
-    int centerY = GetCenteredY(fontSize, paddingY);
+    Font& font = getFont(fontName);
+    int centerY = getCenteredY(fontSize, paddingY);
 
     DrawTextEx(font, text, Vector2{(float)paddingX, (float)centerY}, fontSize, 1, color);
 }
 
-void TextManager::DrawRightText(
+void TextManager::drawRightText(
     const char* text, 
     int fontSize, 
     Color color, 
@@ -177,16 +186,15 @@ void TextManager::DrawRightText(
         );
     }
 
-    Font& font = GetFont(fontName);
-    int textWidth = MeasureTextEx(font, text, fontSize, 1).x;
-    int rightX = (screenWidth - textWidth) - paddingX;
-    int centerY = GetCenteredY(fontSize, paddingY);
+    Font& font = getFont(fontName);
+    int rightX = getRightAlignedX(text, fontSize, paddingX, font);
+    int centerY = getCenteredY(fontSize, paddingY);
 
     DrawTextEx(font, text, Vector2{(float)rightX, (float)centerY}, fontSize, 1, color);
 }
 
-void TextManager::Update()
+void TextManager::update()
 {
-    screenWidth  = GetScreenWidth();
-    screenHeight = GetScreenHeight();
+    m_screenWidth = GetScreenWidth();
+    m_screenHeight = GetScreenHeight();
 }

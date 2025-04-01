@@ -2,12 +2,17 @@
 #define GAME_HPP
 
 #include <raylib.h>
+#include <memory>
 #include "config.hpp"
-#include "renderer.hpp"
+
+class Renderer;
 
 enum class GameState
 {
-    MAIN_MENU
+    MAIN_MENU,
+    PLAYING,
+    PAUSED,
+    GAME_OVER
 };
 
 class Game
@@ -23,6 +28,7 @@ public:
 
 private:
     static GameState currentGameState;
+    std::unique_ptr<Renderer> m_renderer;
 };
 
 #endif // GAME_HPP
